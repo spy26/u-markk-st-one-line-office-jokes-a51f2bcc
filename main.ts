@@ -34,6 +34,13 @@ if (/[^\x00-\x7F]/.test(LINE)) {
   console.error("entry must be ASCII only");
   process.exit(1);
 }
+// No control characters: ASCII still permits \x00-\x1F and \x7F, which are
+// invisible in the output and would corrupt the one-line text the judge
+// reads (newlines are already refused above; this covers the rest).
+if (/[\x00-\x1F\x7F]/.test(LINE)) {
+  console.error("entry must not contain control characters");
+  process.exit(1);
+}
 
 // Write to MAKEFUN_OUTPUT_DIR when set, and to /output as well, so the gate
 // finds the file either way. Dedupe first: when the harness already points
